@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Clubbing vs Loan-to-Spouse — Tax Comparator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F3EFE4;
+    --paper-line:#DCD4BE;
+    --ink:#1C2B22;
+    --ink-soft:#4B5A50;
+    --brass:#8B6F3E;
+    --forest:#2E5339;
+    --rust:#A2402E;
+    --card:#FBF9F3;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    background-image:
+      linear-gradient(var(--paper-line) 1px, transparent 1px);
+    background-size: 100% 42px;
+    font-family:'Inter', sans-serif;
+    color:var(--ink);
+    padding:28px 16px 60px;
+  }
+  .wrap{max-width:760px;margin:0 auto;}
+  header{margin-bottom:22px;}
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--brass);
+    font-weight:700;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:30px;
+    line-height:1.15;
+    margin:6px 0 8px;
+  }
+  .sub{
+    color:var(--ink-soft);
+    font-size:14.5px;
+    line-height:1.55;
+    max-width:60ch;
+  }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--paper-line);
+    border-radius:2px;
+    padding:22px 22px 8px;
+    margin-top:20px;
+    position:relative;
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    left:0; top:0; bottom:0;
+    width:3px;
+    background:var(--forest);
+  }
+  .card h2{
+    font-family:'Fraunces', serif;
+    font-size:15px;
+    font-weight:600;
+    margin:0 0 16px;
+    color:var(--forest);
+  }
+
+  .row{
+    display:grid;
+    grid-template-columns:1fr 130px;
+    gap:12px;
+    align-items:center;
+    padding:9px 0;
+    border-bottom:1px dashed var(--paper-line);
+  }
+  .row:last-child{border-bottom:none;}
+  .row label{font-size:13.5px; color:var(--ink);}
+  .row .hint{display:block; font-size:11.5px; color:var(--ink-soft); margin-top:1px;}
+  .inputwrap{
+    display:flex;
+    align-items:center;
+    background:var(--paper);
+    border:1px solid var(--paper-line);
+    border-radius:2px;
+    padding:0 8px;
+  }
+  .inputwrap span{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink-soft);}
+  input[type=number]{
+    width:100%;
+    border:none;
+    background:transparent;
+    font-family:'JetBrains Mono', monospace;
+    font-size:13.5px;
+    padding:8px 4px;
+    color:var(--ink);
+    text-align:right;
+  }
+  input[type=number]:focus{outline:none;}
+  select{
+    width:100%;
+    border:1px solid var(--paper-line);
+    background:var(--paper);
+    border-radius:2px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px;
+    padding:8px 6px;
+    color:var(--ink);
+  }
+
+  .results{margin-top:22px;}
+  .scenario{
+    background:var(--card);
+    border:1px solid var(--paper-line);
+    border-radius:2px;
+    padding:18px 20px;
+    margin-bottom:14px;
+  }
+  .scenario h3{
+    font-family:'Fraunces', serif;
+    font-size:16px;
+    margin:0 0 12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+  }
+  .line{
+    display:flex;
+    justify-content:space-between;
+    font-size:13px;
+    color:var(--ink-soft);
+    padding:4px 0;
+  }
+  .line b{
+    font-family:'JetBrains Mono', monospace;
+    color:var(--ink);
+    font-weight:500;
+  }
+  .total{
+    display:flex;
+    justify-content:space-between;
+    margin-top:10px;
+    padding-top:10px;
+    border-top:1px solid var(--paper-line);
+    font-size:14px;
+    font-weight:600;
+  }
+  .total b{font-family:'JetBrains Mono', monospace; font-size:16px;}
+
+  .verdict{
+    margin-top:20px;
+    padding:20px;
+    border:1px solid var(--forest);
+    background:#EEF3EB;
+    border-radius:2px;
+    position:relative;
+    overflow:hidden;
+  }
+  .stamp{
+    position:absolute;
+    top:14px; right:16px;
+    border:2.5px solid var(--forest);
+    color:var(--forest);
+    font-family:'JetBrains Mono', monospace;
+    font-weight:700;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    padding:5px 10px;
+    border-radius:3px;
+    transform:rotate(6deg);
+    opacity:0.85;
+  }
+  .stamp.rust{border-color:var(--rust); color:var(--rust);}
+  .verdict .verdict-title{
+    font-family:'Fraunces', serif;
+    font-size:18px;
+    font-weight:700;
+    margin:0 0 6px;
+    max-width:80%;
+  }
+  .verdict p{font-size:13.5px; color:var(--ink-soft); margin:0; line-height:1.55; max-width:85%;}
+
+  .note{
+    margin-top:18px;
+    font-size:12px;
+    color:var(--ink-soft);
+    line-height:1.6;
+    border-top:1px dashed var(--paper-line);
+    padding-top:14px;
+  }
+  .note b{color:var(--ink);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">TaxBuddy · Section 64(1)(iv) Comparator</div>
+    <h1>Clubbing vs. Loan-to-Spouse</h1>
+    <div class="sub">Compare tax under straight clubbing against the loan-to-spouse route. Adjust the numbers below — the family's actual tax outcome updates live.</div>
+  </header>
+
+  <div class="card">
+    <h2>01 — Property &amp; Rent</h2>
+    <div class="row">
+      <label>Property value<span class="hint">Purchase price / market value</span></label>
+      <div class="inputwrap"><span>₹</span><input type="number" id="propValue" value="7500000" step="50000"></div>
+    </div>
+    <div class="row">
+      <label>Annual rent (actual or notional)<span class="hint">Use notional value if 3rd+ house &amp; not actually let out</span></label>
+      <div class="inputwrap"><span>₹</span><input type="number" id="annualRent" value="187500" step="1000"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>02 — Loan-to-Spouse Terms</h2>
+    <div class="row">
+      <label>Amount funded / lent to wife<span class="hint">Usually equal to property value</span></label>
+      <div class="inputwrap"><span>₹</span><input type="number" id="loanAmt" value="7500000" step="50000"></div>
+    </div>
+    <div class="row">
+      <label>Interest rate charged to wife<span class="hint">Market/arm's-length rate</span></label>
+      <div class="inputwrap"><input type="number" id="intRate" value="9" step="0.25"><span>%</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>03 — Tax Slabs</h2>
+    <div class="row">
+      <label>Husband's tax slab</label>
+      <select id="husbSlab">
+        <option value="30">30%</option>
+        <option value="20">20%</option>
+        <option value="15">15% (new regime)</option>
+        <option value="10">10%</option>
+      </select>
+    </div>
+    <div class="row">
+      <label>Wife's tax slab<span class="hint">On rental income after her deductions</span></label>
+      <select id="wifeSlab">
+        <option value="0">0% (no other income)</option>
+        <option value="5">5%</option>
+        <option value="10">10%</option>
+        <option value="20">20%</option>
+        <option value="30">30%</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="results" id="results"></div>
+
+</div>
+
+<script>
+function fmt(n){
+  n = Math.round(n);
+  return '₹' + n.toLocaleString('en-IN');
+}
+
+function compute(){
+  const propValue = parseFloat(document.getElementById('propValue').value) || 0;
+  const annualRent = parseFloat(document.getElementById('annualRent').value) || 0;
+  const loanAmt = parseFloat(document.getElementById('loanAmt').value) || 0;
+  const intRate = parseFloat(document.getElementById('intRate').value) || 0;
+  const husbSlab = parseFloat(document.getElementById('husbSlab').value) / 100;
+  const wifeSlab = parseFloat(document.getElementById('wifeSlab').value) / 100;
+
+  // Scenario A: straight clubbing — rent clubbed to husband, 30% std deduction u/s 24(a)
+  const stdDedA = annualRent * 0.30;
+  const taxableA = Math.max(annualRent - stdDedA, 0);
+  const taxA = taxableA * husbSlab;
+
+  // Scenario B: loan to spouse
+  const interestIncome = loanAmt * (intRate / 100);
+  const taxOnInterest = interestIncome * husbSlab; // husband: income from other sources
+
+  const stdDedWife = annualRent * 0.30;
+  const wifeTaxableRent = Math.max(annualRent - stdDedWife - interestIncome, 0);
+  const wifeTax = wifeTaxableRent * wifeSlab;
+
+  const taxB = taxOnInterest + wifeTax;
+
+  const diff = taxA - taxB;
+  const cheaper = diff > 0 ? 'B' : (diff < 0 ? 'A' : 'tie');
+
+  document.getElementById('results').innerHTML = `
+    <div class="scenario">
+      <h3>Scenario A — Straight Clubbing <span style="font-size:12px;color:var(--ink-soft);font-family:'JetBrains Mono',monospace;">no loan</span></h3>
+      <div class="line"><span>Rent clubbed to husband</span><b>${fmt(annualRent)}</b></div>
+      <div class="line"><span>Less: 30% standard deduction (24a)</span><b>-${fmt(stdDedA)}</b></div>
+      <div class="line"><span>Taxable amount</span><b>${fmt(taxableA)}</b></div>
+      <div class="total"><span>Family tax paid</span><b>${fmt(taxA)}</b></div>
+    </div>
+
+    <div class="scenario">
+      <h3>Scenario B — Loan to Spouse</h3>
+      <div class="line"><span>Interest income → husband's slab</span><b>${fmt(taxOnInterest)}</b></div>
+      <div class="line"><span>Wife's rent, less std. deduction &amp; interest paid</span><b>${fmt(wifeTaxableRent)}</b></div>
+      <div class="line"><span>Tax on wife's residual rent</span><b>${fmt(wifeTax)}</b></div>
+      <div class="total"><span>Family tax paid</span><b>${fmt(taxB)}</b></div>
+    </div>
+
+    <div class="verdict">
+      <div class="stamp ${cheaper==='A' ? 'rust' : ''}">${cheaper==='A' ? 'Skip the loan' : cheaper==='B' ? 'Cheaper route' : 'Even'}</div>
+      <div class="verdict-title">${
+        cheaper==='B' ? `Loan-to-spouse saves ${fmt(Math.abs(diff))}/yr` :
+        cheaper==='A' ? `Clubbing is cheaper by ${fmt(Math.abs(diff))}/yr` :
+        `Both routes cost the same`
+      }</div>
+      <p>${
+        cheaper==='B'
+        ? `The interest rate is low enough relative to the rent that shifting income to the loan structure still beats letting it be clubbed. Genuine loan servicing (real transfers, real repayment) is essential for this to hold.`
+        : cheaper==='A'
+        ? `At this interest rate, the interest income taxed to the husband exceeds what clubbing would have cost on the rent alone. The loan route adds paperwork without a tax benefit here — reconsider the rate, or skip the loan.`
+        : `Marginal case — small changes in rate or rent will tip this either way. Recalculate closer to the actual transaction date.`
+      }</p>
+    </div>
+
+    <div class="note">
+      <b>Assumptions:</b> Section 24(a) 30% standard deduction applied on rent in both scenarios. Wife's interest deduction u/s 24(b) is uncapped here as the property is let-out, not self-occupied (₹2L cap only applies to self-occupied property). This is a planning estimate, not a filing position — verify against actual FY 2026–27 slab rules and get the loan agreement reviewed before executing.
+    </div>
+  `;
+}
+
+document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', compute));
+compute();
+</script>
+</body>
+</html>
